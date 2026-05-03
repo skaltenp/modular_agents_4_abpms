@@ -1,2 +1,2 @@
-#*.db filter=lfs diff=lfs merge=lfs -text
-sessions/**/*.csv filter=lfs diff=lfs merge=lfs -text
+sessions/*.tar.gz filter=lfs diff=lfs merge=lfs -text
+sessions_examples/**/*.csv filter=lfs diff=lfs merge=lfs -text

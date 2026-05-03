@@ -209,3 +209,13 @@ __marimo__/
 
 # additional stuff
 .vscode
+
+# Raw session subdirs are packed into sessions/<model>.tar.gz via manage_sessions.py.
+# Tarballs at sessions/*.tar.gz are tracked (LFS); extracted subdirs are not.
+sessions/*/
+
+# Runtime state written by run_experiment.py
+process_id.txt
+session_id.txt
+seed.txt
+sessions_folder.txt
