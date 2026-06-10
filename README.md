@@ -823,3 +823,25 @@ python generate_xlsx_results.py
 ---
 
 # Changelog
+
+## Rerun Sessions Due to OpenAI Prompt Moderation
+
+While re-downloading this repository for use in a follow-up paper, we noticed that we had forgotten to report three reruns of `invalid_prompt` failures (input moderation flag returned by the OpenAI Responses API before the agent could attempt the task) that had accidentally overwritten the original flagged sessions in place. This note discloses the situation and shows that **it does not change any result reported in the paper.**
+
+The failure mode is exogenous to the agent under test (same class as a timeout or rate-limit error); the rule "rerun once on `invalid_prompt`" was applied uniformly.
+
+The moderation error -- `Invalid prompt: your prompt was flagged as potentially violating our usage policy. Please try again with a different prompt: https://platform.openai.com/docs/guides/reasoning#advice-on-prompting` -- occurs in many session logs without causing a process failure: it is returned as a tool error, the agent recovers, and the process completes (`error_process: false`). See e.g. `processadaptation_0_values_processadaptationmethod_add_tour_J09B_seed_4012` (gpt-5.1, reasoning-high). Only the three sessions below failed terminally and were rerun:
+
+- GPT-5.1 / high, Modular Agents Add Rule: `processadaptation_base_rule_processadaptationmethod_add_tour_J09B_seed_4506_exception_handling`
+- GPT-5.1 / high, Modular Agents BPMN Rule: `processadaptation_base_rule_processadaptationmethod_generate_bpmn_tour_J09B_seed_4506_exception_handling`
+- GPT-5.4 / none, Modular Agents BPMN Rule: `processadaptation_500_values_processadaptationmethod_generate_bpmn_tour_J09B_seed_42`
+
+If all three reruns were instead treated as failures, the affected cells in Table 4 would change by -0.5 pp each:
+
+| Cell | Reported | If reruns treated as failures |
+| --- | --- | --- |
+| GPT-5.1 / high / Modular Agents Add Rule | 81.6 % | 81.1 % |
+| GPT-5.1 / high / Modular Agents BPMN Rule | 86.3 % | 85.8 % |
+| GPT-5.4 / none / Modular Agents BPMN Rule | 92.6 % | 92.1 % |
+
+All other reported numbers are unchanged. None of the rankings, comparisons, or claims drawn in the paper changes direction: GPT-5.4 still leads on completion, the Baseline Agent is still on par with the modular configurations for GPT-5.1 with high reasoning, the Rule Addition approach for Qwen3.5:35b still outperforms both Rule Generation and the Baseline Agent, and the qualitative discussion holds without modification.
